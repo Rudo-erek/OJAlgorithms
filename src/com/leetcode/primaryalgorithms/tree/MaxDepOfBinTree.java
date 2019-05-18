@@ -1,4 +1,4 @@
-package com.leetcodeC.primaryalgorithms;
+package com.leetcode.primaryalgorithms.tree;
 
 import java.util.Stack;
 
