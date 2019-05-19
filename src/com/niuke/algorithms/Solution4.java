@@ -15,42 +15,35 @@ public class Solution4 {
 
     public TreeNode reConstructBinaryTree(int [] pre,int [] in) {
         // 根据先序遍历的顺序：根-左-右，先访问的肯定是根结点，后面访问的是根节点的子节点
-        // 判断子节点是左左孩子还是右孩子，根据中序遍历顺序：左-根-右，如果在中序遍历中，子节点
+        // 判断子节点是左孩子还是右孩子，根据中序遍历顺序：左-根-右，如果在中序遍历中，子节点
         // 先于根节点，则子节点为左孩子
         // 然后递归判断右孩子，如果子节点在根节点的后面，则从根节点开始，递归判断子节点是哪个祖先的右节点
         if (pre == null || pre.length == 0) return null;
         TreeNode root = new TreeNode(pre[0]);
-        TreeNode parent = root;
-        TreeNode node, nextParent = root;
+        TreeNode node = root;
         for (int i = 1; i < pre.length; i++) {
             node = new TreeNode(pre[i]);
-            nextParent = decidePosOfChildNode(in, parent, node, root);
-            if (nextParent == null) return root;
-            parent = node;
+            decidePosOfChild(in, node, root);
         }
         return root;
     }
 
-    public TreeNode decidePosOfChildNode(int[] in, TreeNode parent, TreeNode node, TreeNode root) {
-        if (in == null || in.length == 0) return root;
-        for (int i = 0; i < in.length; i++) {
-            if (node.val == in[i]) {
-                parent.left = node;
-                return root;
-            }
-            if (parent.val == in[i]) {
-                //decidePosOfChildNode(in, node, root);
-                if (i == in.length-1) parent.right = node;
-                if (root.val == in[i+1]) {
-                    parent.right = node;
-                    return root;
-                } else {
-                    root.right = node;
-                    return node;
-                }
-            }
-        }
-        return null;
+    public void decidePosOfChild(int[] arr, TreeNode node, TreeNode root) {
+         if (root == null || node == null) return;
+
+         for (int i = 0; i < arr.length; i++) {
+             if (node.val == arr[i]) {
+                 if (root.left == null) root.left = node;
+                 else decidePosOfChild(arr, node, root.left);
+                 return;
+             }
+             if (root.val == arr[i]) {
+                 if (root.right == null) root.right = node;
+                 else decidePosOfChild(arr, node, root.right);
+                 return;
+             }
+         }
+         return;
     }
 
     public static void main(String[] args) {
@@ -72,21 +65,4 @@ public class Solution4 {
             nodes.add(node.right);
         }
     }
-
-    /*
-    public void decidePosOfChildNode(int[] in, TreeNode node, TreeNode root) {
-        if (in == null || in.length == 0) return;
-        for (int i = 0; i < in.length; i++) {
-            if (node.val == in[i]) {
-                decidePosOfChildNode(in, node, root.left);
-                return;
-            }
-            if (root.val == in[i]) {
-                root.right = node;
-                return;
-            }
-        }
-        return;
-    }*/
-
 }
